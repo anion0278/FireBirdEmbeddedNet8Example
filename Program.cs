@@ -20,7 +20,7 @@ else
 var con = new FbConnection(conn.ConnectionString);
 con.Open();
 
-//string sqlQuery = "SELECT rdb$get_context('SYSTEM', 'ENGINE_VERSION') \r\n             as version from rdb$database;\r\n";
+//string sqlQuery = "SELECT rdb$get_context('SYSTEM', 'ENGINE_VERSION') as version from rdb$database;"; //To check Firebird version
 string sqlQuery = "SELECT emp_no, full_name, job_code, job_country FROM employee;";
 
 using (var command = con.CreateCommand())
