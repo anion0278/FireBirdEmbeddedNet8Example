@@ -1,10 +1,27 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
 
-string connectionString = "User=SYSDBA;Password=masterkey;Database=ExampleData.fdb;ServerType=1;";
-var con = new FbConnection(connectionString);
+//string connectionString = "User=SYSDBA;Password=masterkey;Database=ExampleData.fdb;ServerType=1;";
+FbConnectionStringBuilder conn = new FbConnectionStringBuilder();
+// next line basically to ensure I'm using Embedded mode...
+conn.ServerType = FbServerType.Embedded;
+// --- test connection - in embedded mode, should not have DataSource nor password
+if (conn.ServerType == FbServerType.Embedded)
+{
+    conn.ClientLibrary = "fbclient.dll";
+    conn.UserID = "SYSDBA";
+    conn.Password = "masterkey";
+    conn.Database = "employee.fdb";
+}
+else
+{
+    throw new ArgumentException();
+}
+
+var con = new FbConnection(conn.ConnectionString);
 con.Open();
 
-string sqlQuery = "SELECT * FROM \"Items\"";
+//string sqlQuery = "SELECT rdb$get_context('SYSTEM', 'ENGINE_VERSION') \r\n             as version from rdb$database;\r\n";
+string sqlQuery = "SELECT emp_no, full_name, job_code, job_country FROM employee;";
 
 using (var command = con.CreateCommand())
 {
